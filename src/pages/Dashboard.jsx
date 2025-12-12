@@ -1,5 +1,8 @@
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import AvatarUpdate from "../components/AvatarUpdate";
+import CoverImage from "../components/CoverImage";
+import UpdateAccountForm from "../components/UpdateAccountForm";
 
 const Dashboard = () => {
   const { user, loading, logout } = useAuth();
@@ -52,33 +55,46 @@ const Dashboard = () => {
     <div className="min-h-screen bg-neutral-900 text-neutral-100 p-8">
       <div className="max-w-2xl mx-auto">
         <div className="bg-neutral-800/50 border border-neutral-700/50 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
-          {/* Header */}
-          <div className="bg-neutral-800/80 border-b border-neutral-700 px-8 py-8 relative">
-            <div className="flex items-start space-x-6">
-              <div className="flex-shrink-0">
-                <img
-                  src={user.avatar}
-                  alt="avatar"
-                  className="w-24 h-24 rounded-xl border-2 border-neutral-600 object-cover"
-                />
-              </div>
+          {/* ----------------- COVER IMAGE ----------------- */}
+          <div className="relative h-40 bg-neutral-800/40 border-b border-neutral-700 overflow-hidden">
+            {user.coverImage ? (
+              <img
+                src={user.coverImage}
+                alt="Cover"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 opacity-60" />
+            )}
+          </div>
 
-              <div className="flex-1 min-w-0">
-                <h1 className="text-3xl font-bold text-neutral-100 leading-tight mb-1 truncate">
-                  {user.fullName}
-                </h1>
-                <p className="text-neutral-400 text-lg mb-4">
-                  @{user.username}
-                </p>
-                <p className="text-neutral-400 text-sm bg-neutral-700/50 px-4 py-1 rounded-lg inline-block max-w-max">
-                  {user.email}
-                </p>
-              </div>
+          {/* ----------------- HEADER CONTENT ----------------- */}
+          <div className="px-8 pb-8 pt-12 relative">
+            {/* Avatar Overlapping */}
+            <div className="absolute -top-12 left-8">
+              <img
+                src={user.avatar}
+                alt="avatar"
+                className="w-24 h-24 rounded-xl border-4 border-neutral-900 object-cover shadow-xl"
+              />
+            </div>
+
+            {/* User Info */}
+            <div className="ml-36 pt-1">
+              <h1 className="text-3xl font-bold text-neutral-100 leading-tight mb-1 truncate">
+                {user.fullName}
+              </h1>
+              <p className="text-neutral-400 text-lg mb-4">@{user.username}</p>
+
+              <p className="text-neutral-400 text-sm bg-neutral-700/50 px-4 py-1 rounded-lg inline-block max-w-max">
+                {user.email}
+              </p>
             </div>
           </div>
 
-          {/* Content */}
-          <div className="p-8 space-y-8">
+          {/* ----------------- CONTENT BOX ----------------- */}
+          <div className="p-8 space-y-10">
+            {/* User ID + Status */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
@@ -101,14 +117,24 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="pt-8 border-t border-neutral-700">
-              <p className="text-center text-neutral-400 text-sm py-4 bg-neutral-800/50 rounded-lg">
-                Authentication verified
-              </p>
+            {/* ----------------- PROFILE SETTINGS ----------------- */}
+            <div className="pt-6 border-t border-neutral-700">
+              <h2 className="text-neutral-300 text-lg font-semibold mb-6">
+                Profile Settings
+              </h2>
+
+              {/* Cover Image Update */}
+              <CoverImage />
+
+              {/* Avatar Update */}
+              <AvatarUpdate />
+
+              {/* Account Details Form */}
+              <UpdateAccountForm />
             </div>
 
-            {/* Logout Button */}
-            <div className="pt-4 flex justify-center">
+            {/* ------------------ Logout Button ------------------ */}
+            <div className="pt-6 flex justify-center">
               <button
                 onClick={handleLogout}
                 className="w-40 bg-red-600 hover:bg-red-500 text-white font-semibold py-2 rounded-lg transition-all shadow-md hover:shadow-red-500/30"
