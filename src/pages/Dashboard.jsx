@@ -1,143 +1,232 @@
+// --- DASHBOARD (STATIC SAFE VERSION) ---
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import AvatarUpdate from "../components/AvatarUpdate";
-import CoverImage from "../components/CoverImage";
-import UpdateAccountForm from "../components/UpdateAccountForm";
 
 const Dashboard = () => {
   const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
 
-  async function handleLogout() {
-    await logout();
-    navigate("/login");
-  }
-
-  // ------------------ LOADING SKELETON ------------------
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral-900 text-neutral-100 p-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-neutral-800/50 border border-neutral-700/50 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden p-8">
-            <div className="flex items-start space-x-6">
-              <div className="w-24 h-24 bg-neutral-700 rounded-xl animate-pulse"></div>
-
-              <div className="flex-1 space-y-4">
-                <div className="h-6 w-40 bg-neutral-700 rounded-lg animate-pulse"></div>
-                <div className="h-4 w-24 bg-neutral-700 rounded-lg animate-pulse"></div>
-                <div className="h-4 w-32 bg-neutral-700 rounded-lg animate-pulse"></div>
-              </div>
+      <div className="min-h-screen bg-neutral-950 flex items-center justify-center px-8">
+        <div
+          className="w-full max-w-xl bg-neutral-900/60 border border-neutral-800 
+          rounded-2xl p-10 space-y-6 shadow-2xl"
+        >
+          <div className="flex items-center gap-6">
+            <div className="w-20 h-20 rounded-xl bg-neutral-800 animate-pulse" />
+            <div className="flex-1 space-y-3">
+              <div className="h-5 w-40 bg-neutral-800 animate-pulse rounded" />
+              <div className="h-4 w-32 bg-neutral-800 animate-pulse rounded" />
+              <div className="h-4 w-24 bg-neutral-800 animate-pulse rounded" />
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
-              <div className="h-20 bg-neutral-700 rounded-lg animate-pulse"></div>
-              <div className="h-20 bg-neutral-700 rounded-lg animate-pulse"></div>
-            </div>
-
-            <div className="mt-8 h-12 bg-neutral-700 rounded-lg animate-pulse"></div>
           </div>
         </div>
       </div>
     );
   }
 
-  // ------------------ IF NO USER FOUND ------------------
   if (!user) {
     return (
-      <div className="min-h-screen bg-neutral-900 text-white flex items-center justify-center text-xl">
+      <div className="min-h-screen bg-neutral-950 flex items-center justify-center text-xl text-neutral-300">
         Session expired — please login again.
       </div>
     );
   }
 
-  // ------------------ MAIN UI ------------------
   return (
-    <div className="min-h-screen bg-neutral-900 text-neutral-100 p-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-neutral-800/50 border border-neutral-700/50 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
-          {/* ----------------- COVER IMAGE ----------------- */}
-          <div className="relative h-40 bg-neutral-800/40 border-b border-neutral-700 overflow-hidden">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 px-5 py-24">
+      <div className="max-w-4xl mx-auto">
+        {/* CARD */}
+        <div
+          className="rounded-2xl overflow-hidden bg-neutral-900/70 border border-neutral-800 
+          shadow-[0_0_40px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+        >
+          {/* COVER */}
+          <div className="relative h-48 bg-neutral-800 overflow-hidden">
             {user.coverImage ? (
               <img
                 src={user.coverImage}
-                alt="Cover"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover opacity-90"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 opacity-60" />
+              <div className="w-full h-full bg-gradient-to-r from-slate-800 to-slate-700 opacity-60" />
             )}
+            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/70 via-transparent" />
           </div>
 
-          {/* ----------------- HEADER CONTENT ----------------- */}
-          <div className="px-8 pb-8 pt-12 relative">
-            {/* Avatar Overlapping */}
-            <div className="absolute -top-12 left-8">
-              <img
-                src={user.avatar}
-                alt="avatar"
-                className="w-24 h-24 rounded-xl border-4 border-neutral-900 object-cover shadow-xl"
-              />
-            </div>
+          {/* PROFILE HEADER */}
+          <div className="px-8 pb-8 pt-16 relative">
+            <img
+              src={user.avatar}
+              className="absolute -top-12 left-8 w-28 h-28 rounded-2xl border-4 border-neutral-900 object-cover shadow-xl"
+            />
 
-            {/* User Info */}
-            <div className="ml-36 pt-1">
-              <h1 className="text-3xl font-bold text-neutral-100 leading-tight mb-1 truncate">
-                {user.fullName}
-              </h1>
-              <p className="text-neutral-400 text-lg mb-4">@{user.username}</p>
-
-              <p className="text-neutral-400 text-sm bg-neutral-700/50 px-4 py-1 rounded-lg inline-block max-w-max">
+            <div className="ml-36">
+              <h1 className="text-3xl font-bold">{user.fullName}</h1>
+              <p className="text-neutral-400 text-lg">@{user.username}</p>
+              <span
+                className="inline-block mt-3 text-sm text-neutral-300 bg-neutral-800/70 
+                border border-neutral-700 px-4 py-1 rounded-lg"
+              >
                 {user.email}
-              </p>
+              </span>
             </div>
           </div>
 
-          {/* ----------------- CONTENT BOX ----------------- */}
-          <div className="p-8 space-y-10">
-            {/* User ID + Status */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+          {/* DETAILS */}
+          <div className="px-8 pb-14 space-y-12">
+            {/* USER ID + STATUS */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <p className="text-xs text-neutral-400 uppercase font-semibold mb-1">
                   User ID
-                </label>
-                <div className="bg-neutral-800/50 border border-neutral-700 rounded-lg p-4 font-mono text-sm break-all">
+                </p>
+                <div className="p-3 bg-neutral-900 border border-neutral-800 rounded-lg text-sm break-all">
                   {user._id}
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+              <div>
+                <p className="text-xs text-neutral-400 uppercase font-semibold mb-1">
                   Status
-                </label>
-                <div className="flex items-center justify-center h-12 bg-neutral-800 border border-neutral-700 rounded-lg">
-                  <span className="text-emerald-400 font-semibold text-sm">
-                    Active Session
-                  </span>
+                </p>
+                <div className="p-3 bg-neutral-900 border border-neutral-800 rounded-lg flex items-center justify-center">
+                  <span className="text-emerald-400 font-semibold">Active</span>
                 </div>
               </div>
             </div>
 
-            {/* ----------------- PROFILE SETTINGS ----------------- */}
-            <div className="pt-6 border-t border-neutral-700">
-              <h2 className="text-neutral-300 text-lg font-semibold mb-6">
-                Profile Settings
-              </h2>
+            {/* QUICK SETTINGS */}
+            <div>
+              <h2 className="text-xl font-semibold mb-5">Quick Settings</h2>
 
-              {/* Cover Image Update */}
-              <CoverImage />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* SECTION — STATIC COLORS */}
 
-              {/* Avatar Update */}
-              <AvatarUpdate />
+                {/* Edit Profile */}
+                <button
+                  onClick={() => navigate("/settings/profile")}
+                  className="flex gap-4 items-center bg-neutral-900 border border-neutral-800 
+                    rounded-xl p-4 hover:bg-neutral-800 hover:border-neutral-700 transition shadow-md"
+                >
+                  <div className="p-3 bg-neutral-950 border border-neutral-700 rounded-xl">
+                    <svg
+                      className="w-6 h-6 text-emerald-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.6"
+                    >
+                      <path d="M4 21v-3.25L14.81 6l3.25 3.25L7.25 21H4z" />
+                    </svg>
+                  </div>
 
-              {/* Account Details Form */}
-              <UpdateAccountForm />
+                  <div>
+                    <h3 className="font-semibold text-neutral-200">
+                      Edit Profile
+                    </h3>
+                    <p className="text-neutral-400 text-sm">
+                      Update name & email
+                    </p>
+                  </div>
+                </button>
+
+                {/* Password */}
+                <button
+                  onClick={() => navigate("/settings/password")}
+                  className="flex gap-4 items-center bg-neutral-900 border border-neutral-800 
+                    rounded-xl p-4 hover:bg-neutral-800 hover:border-neutral-700 transition shadow-md"
+                >
+                  <div className="p-3 bg-neutral-950 border border-neutral-700 rounded-xl">
+                    <svg
+                      className="w-6 h-6 text-purple-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.6"
+                    >
+                      <path d="M12 17v-5m6 5V9a6 6 0 10-12 0v8h12z" />
+                    </svg>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-neutral-200">
+                      Change Password
+                    </h3>
+                    <p className="text-neutral-400 text-sm">
+                      Secure your account
+                    </p>
+                  </div>
+                </button>
+
+                {/* Avatar */}
+                <button
+                  onClick={() => navigate("/settings/avatar")}
+                  className="flex gap-4 items-center bg-neutral-900 border border-neutral-800 
+                    rounded-xl p-4 hover:bg-neutral-800 hover:border-neutral-700 transition shadow-md"
+                >
+                  <div className="p-3 bg-neutral-950 border border-neutral-700 rounded-xl">
+                    <svg
+                      className="w-6 h-6 text-blue-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.6"
+                    >
+                      <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm8 9a8 8 0 10-16 0h16z" />
+                    </svg>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-neutral-200">
+                      Update Avatar
+                    </h3>
+                    <p className="text-neutral-400 text-sm">
+                      Update your picture
+                    </p>
+                  </div>
+                </button>
+
+                {/* Cover */}
+                <button
+                  onClick={() => navigate("/settings/cover")}
+                  className="flex gap-4 items-center bg-neutral-900 border border-neutral-800 
+                    rounded-xl p-4 hover:bg-neutral-800 hover:border-neutral-700 transition shadow-md"
+                >
+                  <div className="p-3 bg-neutral-950 border border-neutral-700 rounded-xl">
+                    <svg
+                      className="w-6 h-6 text-pink-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.6"
+                    >
+                      <path d="M3 5h18v14H3V5zm5 5l3 4 2-3 4 6H6l2-7z" />
+                    </svg>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-neutral-200">
+                      Change Cover Image
+                    </h3>
+                    <p className="text-neutral-400 text-sm">
+                      Customize your header
+                    </p>
+                  </div>
+                </button>
+              </div>
             </div>
 
-            {/* ------------------ Logout Button ------------------ */}
-            <div className="pt-6 flex justify-center">
+            {/* LOGOUT */}
+            <div className="flex justify-center">
               <button
-                onClick={handleLogout}
-                className="w-40 bg-red-600 hover:bg-red-500 text-white font-semibold py-2 rounded-lg transition-all shadow-md hover:shadow-red-500/30"
+                onClick={async () => {
+                  await logout();
+                  navigate("/login");
+                }}
+                className="px-10 py-2.5 bg-red-600 hover:bg-red-500 text-white font-semibold 
+                  rounded-lg shadow-md hover:shadow-red-500/30 transition"
               >
                 Logout
               </button>

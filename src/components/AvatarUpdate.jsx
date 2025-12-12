@@ -15,7 +15,7 @@ const AvatarUpdate = () => {
 
   const inputRef = useRef(null);
 
-  // Cleanup preview blob URL when preview changes OR component unmounts
+  // Cleanup preview blob URL
   useEffect(() => {
     return () => {
       if (preview && preview.startsWith("blob:")) {
@@ -38,7 +38,6 @@ const AvatarUpdate = () => {
       return;
     }
 
-    // Revoke old preview to avoid memory leak
     if (preview && preview.startsWith("blob:")) {
       URL.revokeObjectURL(preview);
     }
@@ -56,7 +55,7 @@ const AvatarUpdate = () => {
     }
 
     const fd = new FormData();
-    fd.append("avatar", file); // must match backend upload.single("avatar")
+    fd.append("avatar", file);
 
     try {
       setUploading(true);
@@ -72,15 +71,12 @@ const AvatarUpdate = () => {
       });
 
       toast.success(res.data.message || "Avatar updated successfully!");
-
-      await fetchCurrentUser(); // Refresh frontend with backend avatar URL
+      await fetchCurrentUser();
 
       setFile(null);
       setProgress(0);
-
       if (inputRef.current) inputRef.current.value = "";
     } catch (err) {
-      console.error(err);
       toast.error(err?.response?.data?.message || "Failed to update avatar");
     } finally {
       setUploading(false);
@@ -88,66 +84,87 @@ const AvatarUpdate = () => {
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-700 p-6 rounded-xl max-w-sm space-y-6 shadow-lg">
-      <h2 className="text-slate-200 text-lg font-semibold">Update Avatar</h2>
-
-      {/* Avatar Preview */}
-      <div className="flex justify-center">
-        <img
-          src={preview || user?.avatar}
-          alt="avatar"
-          className="w-32 h-32 rounded-full border border-slate-700 object-cover shadow-md"
-        />
-      </div>
-
-      {/* Custom File Input */}
-      <div className="space-y-2">
-        <p className="text-sm text-slate-300">Select new avatar</p>
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="px-4 py-2 bg-slate-800 text-slate-200 rounded-lg border border-slate-600 hover:bg-slate-700 transition"
-          >
-            Choose File
-          </button>
-
-          <span className="text-slate-400 text-sm">
-            {file ? file.name : "No file chosen"}
-          </span>
-        </div>
-
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleSelect}
-          className="hidden"
-        />
-      </div>
-
-      {/* Progress Bar */}
-      {uploading && (
-        <div className="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700">
-          <div
-            className="h-full bg-emerald-500 transition-all"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-      )}
-
-      {/* Update Button */}
-      <button
-        disabled={uploading}
-        onClick={uploadAvatar}
-        className="
-        w-full rounded-lg bg-emerald-500 hover:bg-emerald-400 text-emerald-950 
-        py-2 font-medium transition 
-        disabled:bg-emerald-600/50 disabled:cursor-not-allowed
-      "
+    <div className="w-full flex justify-center py-12 px-6">
+      <div
+        className="w-full max-w-md bg-neutral-900/60 border border-neutral-700/60 backdrop-blur-xl 
+                   rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.45)] p-8 
+                   transition-all duration-300"
       >
-        {uploading ? `Uploading... ${progress}%` : "Update Avatar"}
-      </button>
+        {/* Header */}
+        <h2 className="text-xl font-semibold text-neutral-100 mb-6 tracking-wide">
+          Update Avatar
+        </h2>
+
+        {/* Avatar Preview */}
+        <div className="flex justify-center mb-6">
+          <div className="relative group">
+            <img
+              src={preview || user?.avatar}
+              alt="avatar"
+              className="w-36 h-36 rounded-full border-2 border-neutral-700 
+                         object-cover shadow-xl transition-all duration-300 
+                         group-hover:scale-105 group-hover:border-emerald-400/60"
+            />
+
+            <div
+              className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-400/20 to-teal-500/20 
+                         scale-0 group-hover:scale-100 blur-xl transition-transform duration-300"
+            />
+          </div>
+        </div>
+
+        {/* File Selector */}
+        <div className="space-y-3">
+          <p className="text-sm text-neutral-300">Select new avatar</p>
+
+          <div
+            className="flex items-center justify-between bg-neutral-800/50 border border-neutral-700/70 
+                       rounded-lg px-4 py-3 transition-all"
+          >
+            <button
+              onClick={() => inputRef.current?.click()}
+              className="px-4 py-2 rounded-lg bg-neutral-800 text-neutral-200 border border-neutral-600 
+                         hover:bg-neutral-700 transition-all"
+            >
+              Choose File
+            </button>
+
+            <span className="text-neutral-400 text-sm truncate max-w-[160px]">
+              {file ? file.name : "No file chosen"}
+            </span>
+          </div>
+
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleSelect}
+            className="hidden"
+          />
+        </div>
+
+        {/* Progress Bar */}
+        {uploading && (
+          <div className="mt-5 w-full bg-neutral-800/70 rounded-full h-3 overflow-hidden border border-neutral-700">
+            <div
+              className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 shadow-inner transition-all"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <button
+          disabled={uploading}
+          onClick={uploadAvatar}
+          className="w-full mt-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 
+                     text-neutral-900 font-semibold shadow-lg shadow-emerald-500/20 
+                     hover:shadow-emerald-500/40 hover:scale-[1.01] active:scale-[0.98] 
+                     transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {uploading ? `Uploading... ${progress}%` : "Update Avatar"}
+        </button>
+      </div>
     </div>
   );
 };
