@@ -132,6 +132,9 @@ const Register = () => {
               {...register("fullName", { required: "Full Name is required" })}
               placeholder="John Doe"
             />
+            {errors.fullName && (
+              <p className="text-rose-400 text-xs">{errors.fullName.message}</p>
+            )}
           </div>
 
           {/* Username */}
@@ -144,6 +147,9 @@ const Register = () => {
               {...register("username")}
               placeholder="username"
             />
+            {errors.username && (
+              <p className="text-rose-400 text-xs">{errors.username.message}</p>
+            )}
           </div>
 
           {/* Password */}
@@ -157,6 +163,9 @@ const Register = () => {
               {...register("password")}
               placeholder="••••••••"
             />
+            {errors.password && (
+              <p className="text-rose-400 text-xs">{errors.password.message}</p>
+            )}
           </div>
 
           {/* Email */}
@@ -165,9 +174,18 @@ const Register = () => {
             <input
               type="email"
               className="w-full rounded-xl border border-slate-700/70 bg-slate-900/70 px-3 py-2.5 text-sm text-slate-100"
-              {...register("email")}
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: "Invalid email address",
+                },
+              })}
               placeholder="you@example.com"
             />
+            {errors.email && (
+              <p className="text-rose-400 text-xs">{errors.email.message}</p>
+            )}
           </div>
 
           {/* Submit */}
