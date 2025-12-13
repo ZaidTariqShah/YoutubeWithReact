@@ -170,7 +170,7 @@ const Navbar = () => {
                   to="/settings/profile"
                   className="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white"
                 >
-                  Update Profile
+                  Update Profile Details
                 </Link>
                 <Link
                   to="/settings/password"
